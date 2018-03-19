@@ -10,6 +10,7 @@ from keras import backend
 from model import *
 from preprocessing import *
 
+
 def main():
     """
     Main Loop
@@ -20,17 +21,17 @@ def main():
 
     (train_data, train_labels), (dev_data, dev_labels),  (test_data, test_labels) = Data().train_dev_test
 
-    model = Model()
+    # Model exploration
+    model_explore = Model()
+    model_explore.train((train_data, train_labels), (dev_data, dev_labels), epochs=20)
+    model_explore.plot_history()
 
-    history, trained_model = model.train((train_data, train_labels), (dev_data, dev_labels), epochs=20)
-    print(type(history))
-    print(history["val_categorical_accuracy"])
-    # FIXME asset < threshold
-
-    loss, acc = model.evaluate((test_data, test_labels))
+    # Training final model
+    model_final = Model()
+    model_final.train((train_data, train_labels), (dev_data, dev_labels), epochs=9)
+    loss, acc = model_final.evaluate((test_data, test_labels))
     print("Loss: " + str(loss))
     print("Accuracy: " + str(acc))
-
 
 
 if __name__ == "__main__":

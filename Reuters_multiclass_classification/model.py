@@ -11,6 +11,7 @@ class Model:
     """
         Model: NN with FC Layers
         Methods:
+            build() - model architecture
             train() - model training
             evaluate() - model testing
             #FIXME
@@ -36,7 +37,7 @@ class Model:
         self.model = models.Model(inputs=input, outputs=output)
         self.model.compile(optimizer="rmsprop",
                            loss=losses.categorical_crossentropy,
-                           metrics=[metrics.categorical_accuracy])
+                           metrics=["accuracy"])
         #print("Model Summary:")
         #print(self.model.summary())
 
@@ -69,7 +70,39 @@ class Model:
 
 
     def plot_history(self):
-        pass #FIXME p81
+        """
+        Plot loss and accuracy of trained model
+
+        :return: -
+        """
+        try:
+            loss = self.train_history.history["loss"]
+            val_loss = self.train_history.history["val_loss"]
+            acc = self.train_history.history["acc"]
+            val_acc = self.train_history.history["val_acc"]
+
+            epochs = range(1, len(loss) + 1)
+
+            plt.plot(epochs, loss, "bo", label="Training loss")
+            plt.plot(epochs, val_loss, "b", label="Validation loss")
+            plt.title("Training and validation loss")
+            plt.xlabel("Epochs")
+            plt.ylabel("Loss")
+            plt.legend()
+
+            plt.figure()
+
+            plt.plot(epochs, acc, "bo", label="Training acc")
+            plt.plot(epochs, val_acc, "b", label="Validation acc")
+            plt.title("Training and validation accuracy")
+            plt.xlabel("Epochs")
+            plt.ylabel("Acc")
+            plt.legend()
+
+            plt.show()
+
+        except AttributeError:
+            print("You have to train the model before plotting!")
 
 
     def evaluate(self, test_set):

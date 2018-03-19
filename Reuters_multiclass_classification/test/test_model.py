@@ -62,6 +62,14 @@ class ModelTests(unittest.TestCase):
                          "false activation in 3rd layer")
 
 
+    def test_plot_history(self):
+        """
+        Test plotting
+        """
+        self.model.build() # untrained model
+        self.model.plot_history()
+        self.assertRaises(AttributeError, msg="No exception raised, when confronted with empty model")
+
 
     def test_evaluate(self, test_set=mock_test_set, mock_train_set=mock_train_set, mock_dev_set=mock_dev_set):
         """
@@ -79,8 +87,6 @@ class ModelTests(unittest.TestCase):
         self.assertIsNotNone(acc, "accuracy not computed")
         self.assertGreaterEqual(acc, 0., "accuracy is negativ")
         self.assertLessEqual(acc, 1., "accuracy is greater than 1")
-
-
 
 
     def test_predict(self):

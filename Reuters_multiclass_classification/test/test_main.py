@@ -10,6 +10,7 @@ class MainTests(unittest.TestCase):
         # keras backend
         self.assertEqual("tensorflow", keras.backend.backend(), "Keras using Theano")
 
+    @unittest.skip("skip main")
     def test_main(self):
         unit = main.main()
 
