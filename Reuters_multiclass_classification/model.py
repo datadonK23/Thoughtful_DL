@@ -2,9 +2,10 @@
     Model: Sequential
 """
 import os
+import numpy as np
 import matplotlib.pyplot as plt
 
-from keras import models, layers, losses, metrics
+from keras import models, layers, losses
 
 
 class Model:
@@ -69,40 +70,38 @@ class Model:
         return self.train_history.history, self.model
 
 
-    def plot_history(self):
+    def plot_history(self, history):
         """
-        Plot loss and accuracy of trained model
+        Helper, plot loss and accuracy of trained model
 
+        :param history - dict with history of trained model
         :return: -
         """
-        try:
-            loss = self.train_history.history["loss"]
-            val_loss = self.train_history.history["val_loss"]
-            acc = self.train_history.history["acc"]
-            val_acc = self.train_history.history["val_acc"]
+        loss = history["loss"]
+        val_loss = history["val_loss"]
+        acc = history["acc"]
+        val_acc = history["val_acc"]
 
-            epochs = range(1, len(loss) + 1)
+        epochs = range(1, len(loss) + 1)
 
-            plt.plot(epochs, loss, "bo", label="Training loss")
-            plt.plot(epochs, val_loss, "b", label="Validation loss")
-            plt.title("Training and validation loss")
-            plt.xlabel("Epochs")
-            plt.ylabel("Loss")
-            plt.legend()
+        plt.subplot(2, 1, 1)
+        plt.plot(epochs, loss, "bo", label="Training loss")
+        plt.plot(epochs, val_loss, "b", label="Validation loss")
+        plt.title("Training and validation loss")
+        plt.xlabel("Epochs")
+        plt.ylabel("Loss")
+        plt.legend()
 
-            plt.figure()
+        plt.subplot(2, 1, 2)
+        plt.plot(epochs, acc, "bo", label="Training acc")
+        plt.plot(epochs, val_acc, "b", label="Validation acc")
+        plt.title("Training and validation accuracy")
+        plt.xlabel("Epochs")
+        plt.ylabel("Acc")
+        plt.legend()
 
-            plt.plot(epochs, acc, "bo", label="Training acc")
-            plt.plot(epochs, val_acc, "b", label="Validation acc")
-            plt.title("Training and validation accuracy")
-            plt.xlabel("Epochs")
-            plt.ylabel("Acc")
-            plt.legend()
-
-            plt.show()
-
-        except AttributeError:
-            print("You have to train the model before plotting!")
+        plt.subplots_adjust(hspace=0.5)
+        plt.show()
 
 
     def evaluate(self, test_set):
@@ -150,10 +149,12 @@ class Model:
         :param input: input data, must be a np.array of shape (n, 10000) with values 0 or 1
         :param load_model_name: string with name of model (e.g. "model_1.h5"),
                                     default None (use self.model for prediction)
-        :return: output = #FIXME
+        :return: output = ndarray of shape (predictions, topics), where each prediction is
+                            an array of probabilites to which topic the input belongs
         """
         if load_model_name:
             self.model = self.load(self.model_dir, load_model_name)
 
-        #FIXME
-        pass
+        output_probas = self.model.predict(input)
+
+        return output_probas

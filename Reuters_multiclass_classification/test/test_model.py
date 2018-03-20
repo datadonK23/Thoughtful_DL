@@ -1,21 +1,20 @@
 import unittest
 import numpy as np
 import json
-import os
 import shutil, tempfile
 
 from model import Model
 
 
 class ModelTests(unittest.TestCase):
-    mock_train_set = (np.zeros((1, 10000)), np.zeros((1, 46)))
-    mock_dev_set = mock_train_set
-    mock_test_set = mock_train_set
-
 
     def setUp(self):
         self.model = Model()
         self.test_model_dir = tempfile.mkdtemp()
+        self.mock_train_set = (np.zeros((1, 10000)), np.zeros((1, 46)))
+        self.mock_dev_set = self.mock_train_set
+        self.mock_test_set = self.mock_train_set
+        self.mock_input = np.random.randint(2, size=20000).reshape(2, 10000)
 
 
     def tearDown(self):
@@ -62,22 +61,13 @@ class ModelTests(unittest.TestCase):
                          "false activation in 3rd layer")
 
 
-    def test_plot_history(self):
-        """
-        Test plotting
-        """
-        self.model.build() # untrained model
-        self.model.plot_history()
-        self.assertRaises(AttributeError, msg="No exception raised, when confronted with empty model")
-
-
-    def test_evaluate(self, test_set=mock_test_set, mock_train_set=mock_train_set, mock_dev_set=mock_dev_set):
+    def test_evaluate(self):
         """
         Test evaluation
         """
         self.model.build()
-        self.model.train(mock_train_set, mock_dev_set, 1, 512, save_model=False)
-        loss, acc = self.model.evaluate(test_set)
+        self.model.train(self.mock_train_set, self.mock_dev_set, 1, 512, save_model=False)
+        loss, acc = self.model.evaluate(self.mock_test_set)
 
         # Loss
         self.assertIsNotNone(loss, "loss not computed")
@@ -98,27 +88,18 @@ class ModelTests(unittest.TestCase):
         test_output = self.model.predict(self.mock_input)
 
         # existence of prediction
-        self.assertIsNotNone(test_output, "no prediction generated, without given model name")
+        self.assertIsNotNone(test_output, "no prediction generated")
+
+        # probabilities of each prediction must sum up to 1
+        np.testing.assert_array_almost_equal(np.sum(test_output, axis=1),
+                                             np.ones((self.mock_input.shape[0],)),
+                                             err_msg="predicted probabilites don't sum to 1")
 
         # boundaries of prediction
-        self.assertGreaterEqual(test_output, 0., "prediction out of boundaries (is negativ)")
-        self.assertLessEqual(test_output, 1., "prediction out of boundaries (is greater than 1)")
-
-        # Tests with specific model name as input
-        files = os.listdir(self.test_model_dir)
-        if files:
-            model_name = files[0]  # hardcoded, take first model from model_dir
-            test_output_from_model = self.model.predict(self.mock_input, model_name)
-
-            # existence
-            self.assertIsNotNone(test_output_from_model, "no prediction generated, with given model name")
-
-            # boundaries of prediction
-            self.assertGreaterEqual(test_output_from_model, 0.,
-                                    "prediction from loaded model out of boundaries (is negativ)")
-            self.assertLessEqual(test_output_from_model, 1.,
-                                 "prediction from loaded model out of boundaries (is greater than 1)")
-
+        for i in test_output:
+            for j in i:
+                self.assertGreaterEqual(j, 0., "prediction out of boundary (is negativ)")
+                self.assertLessEqual(j, 1., "prediction out of boundaries (is greater than 1)")
 
 
 if __name__ == "__main__":
