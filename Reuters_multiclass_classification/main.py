@@ -49,7 +49,7 @@ def main():
         print("You have a problem with variance. Tactics:")
         print("More data; Regularization; NN architecture/Hyperparameter search")
 
-    # Model constrains
+    # Model constraints
     assert acc >= 0.77, "Accuracy of final model is too low"
     assert avoidable_bias < 0.1, "Avoidable bias is too high, use tactics to fix this"
     assert variance < 0.15, "Variance is too high, use tactics to fix this"

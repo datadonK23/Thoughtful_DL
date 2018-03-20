@@ -7,7 +7,8 @@ Original examples are taken from the book [Deep Learning with Python](https://ww
 Project name and purpose of example:
 
 * IMDB_binary_classification - Unittest all the things (incl. anti-pattern of testing the framework)
-* FIXME
+* Reuters_multiclass_classification - Plot training history and evaluate metrices of final model
+* tba
 
 For more details, see `readme.md` in each projects main directory.
 

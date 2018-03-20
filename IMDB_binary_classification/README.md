@@ -1,6 +1,6 @@
 # Binary Classification with IMDB Dataset
 
-From "Deep Learning with Python" by Francois Chollet, p. 86-77
+From "Deep Learning with Python" by Francois Chollet, p. 68-77
 
 ## Purpose
 What should you learn:
@@ -8,6 +8,7 @@ What should you learn:
 ### Workflow
 * Binary classification with Keras
 * Preprocess movie review data
+* Predict if rating is positiv or negativ
 
 ### Thoughtful DL
 * Object-oriented setup of the model
