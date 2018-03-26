@@ -13,10 +13,12 @@ class Model:
         Model: NN with FC Layers
         Methods:
             build() - model architecture
-            train() - model training
-            evaluate() - model testing
-            #FIXME
-            predict(input) - predicts label based on given input
+            train(train_set, dev_set, epochs=1, batch_size=512, save_model=True) - model training
+            plot_history(history) - helper, plots model history
+            evaluate(test_set) - model testing
+            save(model, dir) - saves model to disk
+            load(dir, model_name) - loads model from disk
+            predict(input, load_model_name=None) - predicts label based on given input
     """
     def __init__(self):
         self.model = self.build()
