@@ -16,6 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras import backend
 
+from preprocessing import *
 
 def main():
     """
@@ -23,10 +24,33 @@ def main():
 
     :return: -
     """
-    #Setup
+    # Setup
     backend.clear_session()
 
 
+    # Preprocess data
+    print("... Preprocessing data ...")
+    texts, labels = preprocess_labels(data_dir_path="data/aclImdb", dataset="train")
+    vectorized_texts, word_index = tokenize_data(texts)
+    X_train, y_train, X_val, y_val = split_data(vectorized_texts, labels)
+
+    print("Data loaded:")
+    print("Training features of shape {}".format(X_train.shape))
+    print("Training labels of shape {}".format(y_train.shape))
+    print("Validation features of shape {}".format(X_val.shape))
+    print("Validation labels of shape {}".format(y_val.shape))
+
+
+    # Preprocess GloVe embedding
+    print("... Preprocessing embedding ...")
+    embedding_idx = parse_glove(glove_file_path="model/glove.6B/glove.6B.100d.txt")
+    embedding_matrix = make_embedding_matrix(embedding_idx, word_index)
+
+    print("Embedding matrix of shape {} loaded".format(embedding_matrix.shape))
+
+
+    # Model
+    #TODO
 
 
 if __name__ == "__main__":
