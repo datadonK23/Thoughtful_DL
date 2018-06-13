@@ -49,14 +49,15 @@ def tokenize_data(texts, max_len=100, max_words=1000):
     :param texts: list of review texts
     :param max_len: max length of review text
     :param max_words: max number of words to consider in dataset
-    :return: np.ndarray of shape (len(sequences), max_len)
+    :return: tokenized_sequences=np.ndarray of shape (len(sequences), max_len), word_index=Dict{word: encoding}
     """
     tokenizer = Tokenizer(num_words=max_words)
     tokenizer.fit_on_texts(texts)
     sequences = tokenizer.texts_to_sequences(texts)
+    word_index = tokenizer.word_index
     padded_sequences = pad_sequences(sequences, maxlen=max_len)
 
-    return padded_sequences
+    return padded_sequences, word_index
 
 
 def split_data(vectorized_texts, labels, train_samples=200, val_samples=100000):
@@ -80,3 +81,34 @@ def split_data(vectorized_texts, labels, train_samples=200, val_samples=100000):
     y_val = labels[train_samples: train_samples + val_samples]
 
     return X_train, y_train, X_val, y_val
+
+
+def parse_glove(glove_file_path="model/glove.6B/glove.6B.100d.txt"):
+    """
+    Parse GloVe file and create embedding index
+    :param glove_file_path: path to pretrained GloVe embedding
+    :return: embedding_idx - Dict{word: [coefs]}
+    """
+    embedding_idx = {}
+    with open(glove_file_path) as f:
+        for line in f:
+            values = line.split()
+            word = values[0]
+            coefs = np.asarray(values[1: ], dtype="float32")
+            embedding_idx[word] = coefs
+
+    return embedding_idx
+
+
+def make_embedding_matrix(embedding_idx, word_index):
+    """
+    Generate GloVe word-embedding matrix
+    :param embedding_idx: Dict{word: [coefs]} parsed from GloVe file
+    :param word_index: word_index=Dict{word: encoding}
+    :return: embedding_matrix - np.ndarray
+    """
+    raise NotImplementedError
+
+
+
+
