@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from preprocessing import preprocess_labels, tokenize_data
+from preprocessing import preprocess_labels, tokenize_data, split_data
 
 
 class ModelUtilsTests(unittest.TestCase):
@@ -9,6 +9,9 @@ class ModelUtilsTests(unittest.TestCase):
     def setUp(self):
         self.mock_data_path = "data/mock_aclImdb"
         self.mock_texts = ["First mocked review.", "Second mocked review."]
+        self.mock_token_vectors = np.array([[0, 0, 0, 0, 3, 1, 2], [0, 0, 0, 0, 4, 1, 2],
+                                            [0, 0, 0, 0, 3, 1, 2], [0, 0, 0, 0, 4, 1, 2]])
+        self.mock_labels = np.array([0, 1, 0, 1])
 
 
     def tearDown(self):
@@ -52,4 +55,9 @@ class ModelUtilsTests(unittest.TestCase):
         """
         Test train and validation split
         """
-        pass
+        X_train, y_train, X_val, y_val = split_data(self.mock_token_vectors, self.mock_labels, 2, 2)
+
+        self.assertEqual((2, 7), X_train.shape, "Incorrect shape of training samples after split")
+        self.assertEqual((2, 7), X_val.shape, "Incorrect shape of validation samples after split")
+        self.assertEqual((2,), y_train.shape, "Incorrect shape of training labels after split")
+        self.assertEqual((2,), y_val.shape, "Incorrect shpae of validation labels after split")

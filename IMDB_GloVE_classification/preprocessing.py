@@ -59,9 +59,24 @@ def tokenize_data(texts, max_len=100, max_words=1000):
     return padded_sequences
 
 
-def split_data():
+def split_data(vectorized_texts, labels, train_samples=200, val_samples=100000):
     """
     Split data into train and validation splits
-    :return:
+    :param vectorized_texts: np.ndarray of shape (len(sequences), max_len)
+    :param labels: np.ndarray([0|1])
+    :param train_samples: number of training samples
+    :param val_samples: number of validation samples
+    :return: X_train, y_train, X_val, y_val - np.ndarray each
     """
-    pass
+    indices = np.arange(vectorized_texts.shape[0])
+    np.random.shuffle(indices)
+
+    data = vectorized_texts[indices]
+    labels = labels[indices]
+
+    X_train = data[:train_samples]
+    y_train = labels[:train_samples]
+    X_val = data[train_samples : train_samples + val_samples]
+    y_val = labels[train_samples: train_samples + val_samples]
+
+    return X_train, y_train, X_val, y_val
