@@ -6,13 +6,19 @@ From "Deep Learning with Python" by Francois Chollet, p. 189-193
 Download [dataset](http://ai.stanford.edu/~amaas/data/sentiment/) into `/data` 
 directory and uncompress it.
 
+## Models
+Download [GloVe](http://nlp.stanford.edu/data/glove.6B.zip) into `/model` 
+directory and uncompress it.
+
 ## Purpose
 What should you learn:
 
 ### Workflow
+* Functional workflow
 * Processing raw data
 * Using pretrained embedding (GloVe)
 * Classification
 
 ### Thoughtful DL
+* Devide data pipeline in functional parts to ease testing
 * FIXME
