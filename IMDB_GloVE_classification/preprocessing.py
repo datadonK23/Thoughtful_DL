@@ -100,15 +100,21 @@ def parse_glove(glove_file_path="model/glove.6B/glove.6B.100d.txt"):
     return embedding_idx
 
 
-def make_embedding_matrix(embedding_idx, word_index):
+def make_embedding_matrix(embedding_idx, word_index, max_words=1000, embedding_dim=100):
     """
     Generate GloVe word-embedding matrix
     :param embedding_idx: Dict{word: [coefs]} parsed from GloVe file
     :param word_index: word_index=Dict{word: encoding}
+    :param max_words: max number of words to consider in dataset
+    :param embedding_dim: dimension of GloVe embedding (50, 100, 200, 300 for models trained on Wikipedia dataset)
     :return: embedding_matrix - np.ndarray
     """
-    raise NotImplementedError
+    shape = (max_words, embedding_dim)
+    embedding_matrix = np.zeros(shape)
+    for word, i in word_index.items():
+        if i < max_words:
+            embedding_vector = embedding_idx.get(word)
+            if embedding_vector is not None:
+                embedding_matrix[i] = embedding_vector
 
-
-
-
+    return embedding_matrix
