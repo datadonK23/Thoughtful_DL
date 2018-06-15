@@ -51,6 +51,7 @@ def main():
     # Model
     print("... Building model ...")
     model = build_model(embedding_matrix)
+    plot_model(model)
 
     print("... Training model ...")
     history, trained_model= train_model(model, (X_train, y_train), (X_val, y_val), epochs=5)

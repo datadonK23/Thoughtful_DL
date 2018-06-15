@@ -2,7 +2,7 @@ import unittest
 import os, json, pickle, shutil, tempfile
 from keras import models, layers
 
-from model import build_model, train_model, save_model, load_model
+from model import build_model, train_model, plot_model, save_model, load_model
 from preprocessing import preprocess_labels, tokenize_data, split_data
 
 
@@ -10,12 +10,14 @@ class ModelTests(unittest.TestCase):
 
     def setUp(self):
         self.test_model_dir = tempfile.mkdtemp()
+        self.test_plots_dir = tempfile.mkdtemp()
         self.mock_model = models.Sequential([layers.Dense(1, input_shape=(256,)),
                                              layers.Activation("softmax")]) # for IO tests
 
 
     def tearDown(self):
         shutil.rmtree(self.test_model_dir)
+        shutil.rmtree(self.test_plots_dir)
 
 
     def test_build_model(self):
@@ -86,6 +88,21 @@ class ModelTests(unittest.TestCase):
 
         self.assertIsNotNone(mock_trained_model[1], "no model trained")
         self.assertIsNotNone(mock_trained_model[0], "history dict doesn't exist")
+
+
+    def test_plot_model(self):
+        """
+        Test if plotted model is saved to disk
+        """
+        mock_model = self.mock_model
+        plot_model(mock_model, self.test_plots_dir)
+        files = os.listdir(self.test_plots_dir)
+        if files:
+            test_ext = os.path.splitext(files[0])[1]
+
+        # Saves a models
+        self.assertTrue(files, "no model plot saved")
+        self.assertEqual(".png", test_ext, "model plot not saved as '.png'")
 
 
     def test_save_model(self):

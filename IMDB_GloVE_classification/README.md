@@ -22,3 +22,5 @@ What should you learn:
 ### Thoughtful DL
 * Devide data pipeline in functional parts to ease testing
 * FIXME
+* Plot shape informations of layers
+* FIXME

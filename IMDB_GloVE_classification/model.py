@@ -8,7 +8,9 @@ Author: datadonk23 (datadonk23@gmail.com)
 Date: 2018-06-01
 """
 import os
-from keras import models, layers
+from keras import models, layers, utils
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 
 def build_model(embedding_matrix, embedding_dim=100, max_words=10000, maxlen=100):
@@ -58,10 +60,24 @@ def train_model(model, train_set, dev_set, epochs=10, batch_size=32):
     return train_history.history, model
 
 
+def plot_model(model, dir="plots/"):
+    """
+    Helper, plots model with shape informations and saves it to disk
+    :param model: keras model which should be plotted
+    :param dir: directory to save the plot
+    """
+    f_name = model.name + ".png"
+    f_path = os.path.join(dir, f_name)
+    utils.plot_model(model, show_shapes=True, to_file=f_path)
+
+    model_plot = mpimg.imread(f_path)
+    plt.imshow(model_plot)
+    plt.show()
+
+
 def save_model(model, dir):
     """
     Helper, saves models to disk
-
     :param model: Keras models instance
     :param dir: directory name
     """
@@ -72,7 +88,6 @@ def save_model(model, dir):
 def load_model(dir, model_name):
     """
     Helper, loads persisted models
-
     :param dir: directory path of models
     :param model_name: name of persited Keras models
     :return: models
