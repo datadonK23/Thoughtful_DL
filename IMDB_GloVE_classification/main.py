@@ -11,16 +11,15 @@ Output: Probability of positiv rating -> Classification 1 [positiv rating] if pr
 Author: datadonk23 (datadonk23@gmail.com)
 Date: 2018-06-01
 """
-import os
-import numpy as np
-import matplotlib.pyplot as plt
+import os, pickle
 from keras import backend
 
 from preprocessing import *
+from model import *
 
 def main():
     """
-    Main Loop
+    Main logic
 
     :return: -
     """
@@ -43,13 +42,22 @@ def main():
 
     # Preprocess GloVe embedding
     print("... Preprocessing embedding ...")
-    embedding_idx = parse_glove(glove_file_path="model/glove.6B/glove.6B.100d.txt")
+    embedding_idx = parse_glove(glove_file_path="models/glove.6B/glove.6B.100d.txt")
     embedding_matrix = make_embedding_matrix(embedding_idx, word_index)
 
     print("Embedding matrix of shape {} loaded".format(embedding_matrix.shape))
 
 
     # Model
+    print("... Building model ...")
+    model = build_model(embedding_matrix)
+
+    print("... Training model ...")
+    history, trained_model= train_model(model, (X_train, y_train), (X_val, y_val), epochs=5)
+    save_model(trained_model, "models/")
+
+
+    # Evaluation
     #TODO
 
 

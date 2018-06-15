@@ -6,8 +6,8 @@ From "Deep Learning with Python" by Francois Chollet, p. 189-193
 Download [dataset](http://ai.stanford.edu/~amaas/data/sentiment/) into `/data` 
 directory and uncompress it.
 
-## Models
-Download [GloVe](http://nlp.stanford.edu/data/glove.6B.zip) into `/model` 
+## Model
+Download [GloVe](http://nlp.stanford.edu/data/glove.6B.zip) into `/models` 
 directory and uncompress it.
 
 ## Purpose

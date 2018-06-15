@@ -73,7 +73,7 @@ class ModelUtilsTests(unittest.TestCase):
         """
         Test parsing of glove file
         """
-        embedding_idx = parse_glove("model/mock_glove.6B/mock_glove.6B.50d.txt")
+        embedding_idx = parse_glove("models/mock_glove.6B/mock_glove.6B.50d.txt")
 
         self.assertEqual(type({}), type(embedding_idx), "Returned object is not a dict")
         self.assertEqual(7, len(embedding_idx), "Incorrect len of embedding_idx dict")
@@ -88,13 +88,13 @@ class ModelUtilsTests(unittest.TestCase):
         """
         Test shape of embedding matrix
         """
-        mock_embedding_idx = parse_glove("model/mock_glove.6B/mock_glove.6B.50d.txt")
+        mock_embedding_idx = parse_glove("models/mock_glove.6B/mock_glove.6B.50d.txt")
         _, mock_word_idx = tokenize_data(self.mock_texts)
         matrix = make_embedding_matrix(mock_embedding_idx, mock_word_idx, embedding_dim=50)
 
         self.assertEqual(np.ndarray, type(matrix), "Embedding matrix is not a ndarray")
         self.assertEqual(np.float64, matrix.dtype, "Incorrect types of embedding matrix values")
-        self.assertEqual((1000, 50), matrix.shape, "Incorrect shape of embedding matrix")
+        self.assertEqual((10000, 50), matrix.shape, "Incorrect shape of embedding matrix")
 
         matrix = make_embedding_matrix(mock_embedding_idx, mock_word_idx, max_words=4, embedding_dim=50)
         self.assertEqual((4, 50), matrix.shape, "Incorrect shape of embedding matrix, when specified max_words")

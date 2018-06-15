@@ -52,6 +52,7 @@ class Model:
         :param dev_set: (dev_data, dev_labels)
         :param epochs: number of training epochs
         :param batch_size: number of samples for one pass
+        :param save_model: whether trained model should be saved (True|False)
         :return: (train_history, model) - Tuple of monitoring metrices and trained model
         """
         train_data, train_labels = train_set

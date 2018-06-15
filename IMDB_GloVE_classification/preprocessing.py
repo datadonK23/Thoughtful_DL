@@ -43,7 +43,7 @@ def preprocess_labels(data_dir_path="data/aclImdb", dataset="train"):
     return texts, labels
 
 
-def tokenize_data(texts, max_len=100, max_words=1000):
+def tokenize_data(texts, max_len=100, max_words=10000):
     """
     Vectorize reviews
     :param texts: list of review texts
@@ -83,7 +83,7 @@ def split_data(vectorized_texts, labels, train_samples=200, val_samples=100000):
     return X_train, y_train, X_val, y_val
 
 
-def parse_glove(glove_file_path="model/glove.6B/glove.6B.100d.txt"):
+def parse_glove(glove_file_path="models/glove.6B/glove.6B.100d.txt"):
     """
     Parse GloVe file and create embedding index
     :param glove_file_path: path to pretrained GloVe embedding
@@ -100,13 +100,13 @@ def parse_glove(glove_file_path="model/glove.6B/glove.6B.100d.txt"):
     return embedding_idx
 
 
-def make_embedding_matrix(embedding_idx, word_index, max_words=1000, embedding_dim=100):
+def make_embedding_matrix(embedding_idx, word_index, max_words=10000, embedding_dim=100):
     """
     Generate GloVe word-embedding matrix
     :param embedding_idx: Dict{word: [coefs]} parsed from GloVe file
     :param word_index: word_index=Dict{word: encoding}
     :param max_words: max number of words to consider in dataset
-    :param embedding_dim: dimension of GloVe embedding (50, 100, 200, 300 for models trained on Wikipedia dataset)
+    :param embedding_dim: dimension of GloVe embedding (50, 100, 200, 300 for model trained on Wikipedia dataset)
     :return: embedding_matrix - np.ndarray
     """
     shape = (max_words, embedding_dim)
