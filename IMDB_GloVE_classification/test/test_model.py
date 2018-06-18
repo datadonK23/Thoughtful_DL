@@ -2,7 +2,7 @@ import unittest
 import os, json, pickle, shutil, tempfile
 from keras import models, layers
 
-from model import build_model, train_model, plot_model, save_model, load_model
+from model import build_model, train_model, evaluate_model, plot_model, save_model, load_model
 from preprocessing import preprocess_labels, tokenize_data, split_data
 
 
@@ -88,6 +88,27 @@ class ModelTests(unittest.TestCase):
 
         self.assertIsNotNone(mock_trained_model[1], "no model trained")
         self.assertIsNotNone(mock_trained_model[0], "history dict doesn't exist")
+
+
+    def test_evaluate_model(self):
+        """
+        Test boundaries of loss and accuracy
+        """
+        texts, labels = preprocess_labels(data_dir_path="data/mock_aclImdb", dataset="test")
+        vectorized_texts, word_index = tokenize_data(texts)
+        mock_test_set = (vectorized_texts, labels)
+        mock_trained_model = load_model("models/", "mock_trained_model.h5")
+
+        loss, acc = evaluate_model(mock_trained_model, mock_test_set)
+
+        # Loss
+        self.assertIsNotNone(loss, "loss not computed")
+        self.assertGreaterEqual(loss, 0., "loss is negativ")
+
+        # Accuracy
+        self.assertIsNotNone(acc, "accuracy not computed")
+        self.assertGreaterEqual(acc, 0., "accuracy is negativ")
+        self.assertLessEqual(acc, 1., "accuracy is greater than 1")
 
 
     def test_plot_model(self):

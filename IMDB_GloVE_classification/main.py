@@ -11,11 +11,11 @@ Output: Probability of positiv rating -> Classification 1 [positiv rating] if pr
 Author: datadonk23 (datadonk23@gmail.com)
 Date: 2018-06-01
 """
-import os, pickle
 from keras import backend
 
 from preprocessing import *
 from model import *
+
 
 def main():
     """
@@ -30,14 +30,18 @@ def main():
     # Preprocess data
     print("... Preprocessing data ...")
     texts, labels = preprocess_labels(data_dir_path="data/aclImdb", dataset="train")
+    test_texts, y_test = preprocess_labels(data_dir_path="data/aclImdb", dataset="test")
     vectorized_texts, word_index = tokenize_data(texts)
-    X_train, y_train, X_val, y_val = split_data(vectorized_texts, labels)
+    X_test, _ = tokenize_data(test_texts)
+    X_train, y_train, X_val, y_val = split_data(vectorized_texts, labels, train_samples=2500)
 
     print("Data loaded:")
     print("Training features of shape {}".format(X_train.shape))
     print("Training labels of shape {}".format(y_train.shape))
     print("Validation features of shape {}".format(X_val.shape))
     print("Validation labels of shape {}".format(y_val.shape))
+    print("Test features of shape {}".format(X_test.shape))
+    print("Test labels of shape {}".format(y_test.shape))
 
 
     # Preprocess GloVe embedding
@@ -54,12 +58,18 @@ def main():
     plot_model(model)
 
     print("... Training model ...")
-    history, trained_model= train_model(model, (X_train, y_train), (X_val, y_val), epochs=5)
+    history, trained_model= train_model(model, (X_train, y_train), (X_val, y_val), epochs=9)
     save_model(trained_model, "models/")
+    plot_history(history)
 
 
     # Evaluation
-    #TODO
+    print("... Evaluating model ...")
+    loss, acc = evaluate_model(trained_model, (X_test, y_test))
+
+    print("Test scores:")
+    print("Loss", loss)
+    print("Accuracy", acc)
 
 
 if __name__ == "__main__":

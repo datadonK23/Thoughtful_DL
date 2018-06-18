@@ -60,6 +60,19 @@ def train_model(model, train_set, dev_set, epochs=10, batch_size=32):
     return train_history.history, model
 
 
+def evaluate_model(model, test_set):
+    """
+    Evaluates trained model on test set
+    :param model: Trained keras model
+    :param test_set: (X_test, y_test)
+    :return: (loss, accuracy)
+    """
+    (X_test, y_test) = test_set
+    loss, acc = model.evaluate(X_test, y_test)
+
+    return loss, acc
+
+
 def plot_model(model, dir="plots/"):
     """
     Helper, plots model with shape informations and saves it to disk
@@ -81,7 +94,8 @@ def save_model(model, dir):
     :param model: Keras models instance
     :param dir: directory name
     """
-    f_name = model.name + ".h5"
+    #f_name = model.name + ".h5"
+    f_name = "mock_trained_model.h5"
     model.save(os.path.join(dir, f_name))
 
 
@@ -96,3 +110,35 @@ def load_model(dir, model_name):
     model = models.load_model(model_path)
 
     return model
+
+
+def plot_history(history):
+    """
+    Helper, plot loss and accuracy of trained model
+    :param history - dict with history of trained model
+    """
+    loss = history["loss"]
+    val_loss = history["val_loss"]
+    acc = history["acc"]
+    val_acc = history["val_acc"]
+
+    epochs = range(1, len(loss) + 1)
+
+    plt.subplot(2, 1, 1)
+    plt.plot(epochs, loss, "bo", label="Training loss")
+    plt.plot(epochs, val_loss, "b", label="Validation loss")
+    plt.title("Training and validation loss")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+
+    plt.subplot(2, 1, 2)
+    plt.plot(epochs, acc, "bo", label="Training acc")
+    plt.plot(epochs, val_acc, "b", label="Validation acc")
+    plt.title("Training and validation accuracy")
+    plt.xlabel("Epochs")
+    plt.ylabel("Acc")
+    plt.legend()
+
+    plt.subplots_adjust(hspace=0.5)
+    plt.show()
