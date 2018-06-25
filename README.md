@@ -3,6 +3,7 @@ Deep Learning with Python and Keras, the thoughtful way. Testing and validating 
 
 Original examples are taken from the book [Deep Learning with Python](https://www.manning.com/books/deep-learning-with-python) by Francois Chollet. These are enhanced with methods that are highly influenced by the book [Thoughtful Machine Learning with Python](http://shop.oreilly.com/product/0636920039082.do) by Matthew Kirk.
 
+
 ## Content
 Project name and purpose of example:
 
@@ -13,6 +14,11 @@ Project name and purpose of example:
 * TODO - Callbacks and Tensorboard
 
 For more details, see `readme.md` in each projects main directory.
+
+
+## Requirements
+Run `conda env create -f environment.yml` to create an environment with all dependencies. Afterwards run `conda activate DeepLearning` to activate it.
+
 
 ## License
 MIT License
