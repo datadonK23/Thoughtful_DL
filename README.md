@@ -9,7 +9,8 @@ Project name and purpose of example:
 * IMDB_binary_classification - Unittest all the things (incl. anti-pattern of testing the framework)
 * Reuters_multiclass_classification - Plot training history and evaluate metrices of final model
 * HousePrices_regression - Imperative project setup and K-fold validation
-* tba
+* IMDB_GloVe_classification - Functional project setup, text tokenizations, plot model informations, use pretrained embeddings
+* TODO - Callbacks and Tensorboard
 
 For more details, see `readme.md` in each projects main directory.
 
