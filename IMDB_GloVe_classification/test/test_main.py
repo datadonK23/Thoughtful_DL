@@ -5,7 +5,7 @@ from main import *
 
 class MainTests(unittest.TestCase):
 
-    def setUp(self):
+    def test_backend(self):
         # keras backend
         self.assertEqual("tensorflow", keras.backend.backend(), "Keras using Theano")
 
