@@ -3,8 +3,8 @@
 """
 main
 Purpose: Binary Classification with IMDB dataset using GloVe Embedding
-Data: IMDB dataset (imported with Keras)
-Input: 50,000 reviews of movies, labeled with 0 [negativ rating] or 1 [positiv rating]
+Data: IMDB Large Movie Review dataset (http://ai.stanford.edu/~amaas/data/sentiment/)
+Input: 50,000 reviews of movies (25k train, 25k test), labeled with 0 [negativ rating] or 1 [positiv rating]
 Model: Sequential (Embedding + Dense), developed with Keras
 
 Author: datadonk23 (datadonk23@gmail.com)
