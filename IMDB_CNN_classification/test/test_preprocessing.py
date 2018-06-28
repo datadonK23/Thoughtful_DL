@@ -7,71 +7,39 @@ from preprocessing import load_data, pad_texts
 class ModelUtilsTests(unittest.TestCase):
 
     def setUp(self):
-        # self.mock_data_path = "data/mock_aclImdb"
-        # self.mock_texts = ["First mocked review.", "Second mocked review."]
-        # self.mock_token_vectors = np.array([[0, 0, 0, 0, 3, 1, 2], [0, 0, 0, 0, 4, 1, 2],
-        #                                     [0, 0, 0, 0, 3, 1, 2], [0, 0, 0, 0, 4, 1, 2]])
-        # self.mock_labels = np.array([0, 1, 0, 1])
-        pass
+        self.mock_texts = np.array([[0, 0, 0, 0, 3, 1, 2], [0, 0, 0, 0, 4, 1, 2],
+                                    [0, 0, 0, 0, 3, 1, 2], [0, 0, 0, 0, 4, 1, 2]])
 
 
     def tearDown(self):
         pass
 
-    @unittest.skip("FIXME")
+
     def test_load_data(self):
         """
         Test splitting of ratings into texts and labels lists
         """
-        texts_train, labels_train = preprocess_labels(self.mock_data_path, "train")
-        texts_test, labels_test = preprocess_labels(self.mock_data_path, "train")
+        (X_train, y_train), (X_test, y_test) = load_data()
 
-        self.assertEqual(set([0, 1]), set(labels_train), "Labels list contains not only 0 or 1 in trainset")
-        self.assertEqual(set([0, 1]), set(labels_test), "Labels list contains not only 0 or 1 in testset")
+        self.assertEqual((25000,), X_train.shape, "Incorrect shape of training features")
+        self.assertEqual((25000,), X_test.shape, "Incorrect shape of test features")
+        self.assertEqual((25000,), y_train.shape, "Incorrect shape of training labels")
+        self.assertEqual((25000,), y_test.shape, "Incorrect shape of test labels")
 
-        self.assertEqual(len(labels_train), len(texts_train), "Train texts and labels lists have different length")
-        self.assertEqual(len(labels_test), len(texts_test), "Test texts and labels lists have different length")
+        self.assertEqual(list, X_train.dtype, "Incorrect type of values in training features")
+        self.assertEqual(list, X_test.dtype, "Incorrect type of values in test features")
+        self.assertEqual(np.int64, y_train.dtype, "Incorrect type of values in training labels")
+        self.assertEqual(np.int64, y_test.dtype, "Incorrect type of values in test labels")
 
-        self.assertEqual(np.ndarray, type(labels_train), "Train labels not a numpy array")
+        self.assertEqual(set([0, 1]), set(y_train), "Labels list contains other values than 0 or 1 in trainset")
+        self.assertEqual(set([0, 1]), set(y_test), "Labels list contains other values than 0 or 1 in testset")
 
-    @unittest.skip("FIXME")
-    def test_tokenize_data(self):
-        """
-        Test tokenization of review data with var parameters
-        """
-        token100_vector, word_idx = tokenize_data(self.mock_texts)
 
-        self.assertEqual(np.ndarray, type(token100_vector), "Tokenized data not a numpy array")
-        self.assertEqual(2, len(token100_vector), "Incorrect number of returned sequences")
-        self.assertEqual(dict, type(word_idx), "Incorrect type of word index")
-        self.assertEqual(4, len(word_idx), "Incorrect length of word index dict")
-        for k in word_idx.keys():
-            self.assertEqual(str, type(k), "Incorrect type of word index dict keys")
-        for v in word_idx.values():
-            self.assertEqual(int, type(v), "Incorrect type of word index dict values")
-
-        token20_vector, _ = tokenize_data(self.mock_texts, 20)
-        self.assertEqual(20, len(token20_vector[0]), "Incorrect length of token vector")
-        self.assertEqual(len(token20_vector[0]), len(token20_vector[1]), "Token vectors don't match on length")
-
-        token20__wordlimit_vector, _ = tokenize_data(self.mock_texts, 20, 4)
-        self.assertEqual(3, token20__wordlimit_vector.max(), "Incorrect number of words in word-limited vector")
-
-    @unittest.skip("FIXME")
-    def test_split_data(self):
-        """
-        Test shape of train and validation sets
-        """
-        X_train, y_train, X_val, y_val = split_data(self.mock_token_vectors, self.mock_labels, 2, 2)
-
-        self.assertEqual((2, 7), X_train.shape, "Incorrect shape of training samples after split")
-        self.assertEqual((2, 7), X_val.shape, "Incorrect shape of validation samples after split")
-        self.assertEqual((2,), y_train.shape, "Incorrect shape of training labels after split")
-        self.assertEqual((2,), y_val.shape, "Incorrect shpae of validation labels after split")
-
-    @unittest.skip("FIXME")
     def test_pad_texts(self):
         """
         Test paddings
         """
-        pass
+        padded_sequences = pad_texts(self.mock_texts, 10)
+
+        self.assertEqual((4, 10), padded_sequences.shape, "Incorrect shape of padded texts")
+        self.assertEqual(np.int32, padded_sequences.dtype, "Incorrect type of values in padded sequences")

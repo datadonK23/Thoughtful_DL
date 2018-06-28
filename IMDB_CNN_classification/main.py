@@ -25,18 +25,18 @@ def main():
     # Setup
     backend.clear_session()
 
-
     # Preprocess data
-    print("... Preprocessing data ...")
+    print("... Load & preprocess data ...")
+    (X_train, y_train), (X_test, y_test) = load_data()
 
+    X_train = pad_texts(X_train)
+    X_test = pad_texts(X_test)
 
-    # print("Data loaded:")
-    # print("Training features of shape {}".format(X_train.shape))
-    # print("Training labels of shape {}".format(y_train.shape))
-    # print("Validation features of shape {}".format(X_val.shape))
-    # print("Validation labels of shape {}".format(y_val.shape))
-    # print("Test features of shape {}".format(X_test.shape))
-    # print("Test labels of shape {}".format(y_test.shape))
+    print("Data loaded & preprocessed:")
+    print("Training features of shape {}".format(X_train.shape))
+    print("Training labels of shape {}".format(y_train.shape))
+    print("Test features of shape {}".format(X_test.shape))
+    print("Test labels of shape {}".format(y_test.shape))
 
 
     # Model
