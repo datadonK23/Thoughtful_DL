@@ -19,58 +19,64 @@ class ModelTests(unittest.TestCase):
         shutil.rmtree(self.test_model_dir)
         shutil.rmtree(self.test_plots_dir)
 
-    @unittest.skip("FIXME")
+
     def test_build_model(self):
         """
         Test architecture of model
         """
-        mock_embedding_matrix = pickle.load(open("models/mock_glove.6B/mock_embedding_matrix.p", "rb"))
-        mock_model = build_model(mock_embedding_matrix)
-        j_model = json.loads(mock_model.to_json())
+        model = build_model()
+        j_model = json.loads(model.to_json())
 
         # model type
         self.assertEqual("Sequential", j_model["class_name"], "Built model is not a sequential model")
 
         # number of layers
-        self.assertEqual(4, len(mock_model.layers), "incorrect number of layer in model")
+        self.assertEqual(6, len(model.layers), "incorrect number of layer in model")
+
+        # trainability
+        for layer in j_model["config"]:
+            self.assertEqual(True, layer["config"]["trainable"],
+                             "{} layer is not trainable".format(layer["class_name"]))
 
         # embedding input
         self.assertEqual("Embedding", j_model["config"][0]["class_name"],
                          "First layer isn't an embedding layer")
-        self.assertEqual([None, 100], j_model["config"][0]["config"]["batch_input_shape"],
+        self.assertEqual([None, 500], j_model["config"][0]["config"]["batch_input_shape"],
                          "shape of embedding input incorrect")
         self.assertEqual("float32", j_model["config"][0]["config"]["dtype"],
                          "type of embedding input incorrect")
-        self.assertEqual(False, j_model["config"][0]["config"]["trainable"],
-                         "embedding input is trainable")
 
-        # Flatten layer
-        self.assertEqual("Flatten", j_model["config"][1]["class_name"],
-                         "Second layer isn't a flatten layer")
-        self.assertEqual(True, j_model["config"][1]["config"]["trainable"],
-                         "flatten layer is not trainable")
+        # 2 * CNN_1D
+        self.assertEqual("Conv1D", j_model["config"][1]["class_name"], "Second layer isn't a Conv1D layer")
+        self.assertEqual(32, j_model["config"][1]["config"]["filters"], "Incorrect number of filters in 2nd layer")
+        self.assertEqual(7, j_model["config"][1]["config"]["kernel_size"][0],
+                         "Incorrect size of sliding window in 2nd layer")
+        self.assertEqual(1, j_model["config"][1]["config"]["strides"][0], "Incorrect stride in 2nd layer")
+        self.assertEqual("valid", j_model["config"][1]["config"]["padding"], "Incorrect type of paddinge in 2nd layer")
+        self.assertEqual("relu", j_model["config"][1]["config"]["activation"], "false activation in 2nd layer")
 
-        # layer types
-        self.assertEqual("Dense", j_model["config"][2]["class_name"],
-                         "3nd layer isn't specified as dense layer")
-        self.assertEqual("Dense", j_model["config"][3]["class_name"],
-                         "4th layer isn't specified as dense layer")
+        self.assertEqual("MaxPooling1D", j_model["config"][2]["class_name"], "Third layer isn't a MaxPooling1D layer")
+        self.assertEqual(5, j_model["config"][2]["config"]["strides"][0], "Incorrect stride in 3rd layer")
+        self.assertEqual(5, j_model["config"][2]["config"]["pool_size"][0], "Incorrect pool size in 3rd layer")
+        self.assertEqual("valid", j_model["config"][2]["config"]["padding"], "Incorrect type of paddinge in 3rd layer")
 
-        # number of units
-        self.assertEqual(32, j_model["config"][2]["config"]["units"], "false number of units in 3rd layer")
-        self.assertEqual(1, j_model["config"][3]["config"]["units"], "false number of units in 4th layer")
+        self.assertEqual("Conv1D", j_model["config"][3]["class_name"], "Fourth layer isn't a Conv1D layer")
+        self.assertEqual(32, j_model["config"][3]["config"]["filters"], "Incorrect number of filters in 4th layer")
+        self.assertEqual(7, j_model["config"][3]["config"]["kernel_size"][0],
+                         "Incorrect size of sliding window in 4th layer")
+        self.assertEqual(1, j_model["config"][3]["config"]["strides"][0], "Incorrect stride in 4th layer")
+        self.assertEqual("valid", j_model["config"][3]["config"]["padding"], "Incorrect type of paddinge in 4th layer")
+        self.assertEqual("relu", j_model["config"][3]["config"]["activation"], "false activation in 4th layer")
 
-        # trainability
-        self.assertEqual(True, j_model["config"][2]["config"]["trainable"],
-                         "3rd layer is not trainable")
-        self.assertEqual(True, j_model["config"][3]["config"]["trainable"],
-                         "4th layer is not trainable")
+        self.assertEqual("GlobalMaxPooling1D", j_model["config"][4]["class_name"],
+                         "Fifth layer isn't a GlobalMaxPooling1D layer")
 
-        # activations
-        self.assertEqual("relu", j_model["config"][2]["config"]["activation"],
-                         "false activation in 3rd layer")
-        self.assertEqual("sigmoid", j_model["config"][3]["config"]["activation"],
-                         "false activation in 4th layer")
+        # output
+        self.assertEqual("Dense", j_model["config"][5]["class_name"],
+                         "6th layer isn't specified as dense layer")
+        self.assertEqual(1, j_model["config"][5]["config"]["units"], "false number of units in 6th layer")
+        self.assertEqual("linear", j_model["config"][5]["config"]["activation"],
+                         "false activation in 6th layer")
 
     @unittest.skip("FIXME")
     def test_train_model(self):
