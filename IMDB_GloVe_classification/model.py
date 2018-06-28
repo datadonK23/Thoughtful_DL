@@ -94,8 +94,7 @@ def save_model(model, dir):
     :param model: Keras models instance
     :param dir: directory name
     """
-    #f_name = model.name + ".h5"
-    f_name = "mock_trained_model.h5"
+    f_name = model.name + ".h5"
     model.save(os.path.join(dir, f_name))
 
 
