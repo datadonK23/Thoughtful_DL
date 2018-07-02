@@ -8,7 +8,7 @@ Author: datadonk23 (datadonk23@gmail.com)
 Date: 2018-06-27
 """
 import os
-from keras import models, layers, utils
+from keras import models, layers, callbacks, utils
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
@@ -35,27 +35,32 @@ def build_model():
     return model
 
 
-def train_model(model, train_set, dev_set, epochs=10, batch_size=32):
+def train_model(model, train_set, epochs=20, batch_size=128):
     """
     Model training - fit model with train data and validate on dev data
     :param model: keras model which should be trained
     :param train_set: (X_train, y_train)
-    :param dev_set: (X_val, y_val)
     :param epochs: number of training epochs
     :param batch_size: number of samples for one pass
     :return: (train_history, model) - Tuple of monitoring metrices and trained model
     """
-    # X_train, y_train = train_set
-    # X_val, y_val = dev_set
-    #
-    # train_history = model.fit(X_train, y_train,
-    #                           epochs=epochs, batch_size=batch_size,
-    #                           validation_data=(X_val, y_val))
-    #
-    # print("Model trained successfully")
-    #
-    # return train_history.history, model
-    NotImplementedError
+    X_train, y_train = train_set
+
+    callbacks_list = [
+        callbacks.EarlyStopping(monitor="acc", patience=1), # stops when accuracy doesn't improve for >1 (=2) epochs
+        callbacks.ModelCheckpoint(filepath="models/best_model_training.h5",
+                                  monitor="val_loss", save_best_only=True), # saves best trained model
+        callbacks.TensorBoard(log_dir="models/logs", histogram_freq=1)
+    ]
+
+    train_history = model.fit(X_train, y_train,
+                              epochs=epochs, batch_size=batch_size, validation_split=0.2,
+                              callbacks=callbacks_list)
+    num_epochs = len(train_history.history["loss"])
+
+    print("Model trained successfully in {} epochs".format(num_epochs))
+
+    return train_history.history, model
 
 
 def evaluate_model(model, test_set):
@@ -92,8 +97,7 @@ def save_model(model, dir):
     :param model: Keras models instance
     :param dir: directory name
     """
-    #f_name = model.name + ".h5"
-    f_name = "mock_trained_model.h5"
+    f_name = model.name + ".h5"
     model.save(os.path.join(dir, f_name))
 
 

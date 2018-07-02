@@ -45,18 +45,18 @@ def main():
     plot_model(model)
 
     print("... Training model ...")
-    # history, trained_model= train_model(model, (X_train, y_train), (X_val, y_val), epochs=9)
-    # save_model(trained_model, "models/")
-    # plot_history(history)
+    print("Launch TensorBoard server in Terminal to monitor training: $ tensorboard --logdir='models/logs'")
+    history, trained_model= train_model(model, (X_train, y_train))
+    plot_history(history)
 
 
     # Evaluation
     print("... Evaluating model ...")
-    # loss, acc = evaluate_model(trained_model, (X_test, y_test))
-    #
-    # print("Test scores:")
-    # print("Loss", loss)
-    # print("Accuracy", acc)
+    loss, acc = evaluate_model(trained_model, (X_test, y_test))
+
+    print("Test scores:")
+    print("Loss", loss)
+    print("Accuracy", acc)
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ Project name and purpose of example:
 * Reuters_multiclass_classification - Plot training history and evaluate metrices of final model
 * HousePrices_regression - Imperative project setup and K-fold validation
 * IMDB_GloVe_classification - Functional project setup, text tokenizations, plot model informations, use pretrained embeddings
-* TODO - Callbacks and Tensorboard
+* IMDB_CNN_classification - Callbacks and Tensorboard for monitoring training
 
 For more details, see `readme.md` in each projects main directory.
 

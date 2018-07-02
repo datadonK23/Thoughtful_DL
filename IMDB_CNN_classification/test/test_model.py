@@ -1,9 +1,9 @@
 import unittest
-import os, json, pickle, shutil, tempfile
-from keras import models, layers
+import os, json, shutil, tempfile
+from keras import models, layers, datasets
+from keras.preprocessing import sequence
 
 from model import build_model, train_model, evaluate_model, plot_model, save_model, load_model
-from preprocessing import load_data, pad_texts
 
 
 class ModelTests(unittest.TestCase):
@@ -78,34 +78,30 @@ class ModelTests(unittest.TestCase):
         self.assertEqual("linear", j_model["config"][5]["config"]["activation"],
                          "false activation in 6th layer")
 
-    @unittest.skip("FIXME")
+
     def test_train_model(self):
         """
         Test if function returns trained model
         """
-        texts, labels = preprocess_labels(data_dir_path="data/mock_aclImdb", dataset="train")
-        vectorized_texts, word_index = tokenize_data(texts)
-        mock_X_train, mock_y_train, mock_X_val, mock_y_val = split_data(vectorized_texts, labels)
+        (mock_X_train, mock_y_train), _ = datasets.imdb.load_data(num_words=2000)
+        mock_X_train = sequence.pad_sequences(mock_X_train, maxlen=500)
+        mock_model = build_model()
 
-        mock_embedding_matrix = pickle.load(open("models/mock_glove.6B/mock_embedding_matrix.p", "rb"))
-        mock_model = build_model(mock_embedding_matrix)
-
-        mock_trained_model = train_model(mock_model, (mock_X_train, mock_y_train), (mock_X_val, mock_y_val))
+        mock_trained_model = train_model(mock_model, (mock_X_train, mock_y_train), epochs=1)
 
         self.assertIsNotNone(mock_trained_model[1], "no model trained")
         self.assertIsNotNone(mock_trained_model[0], "history dict doesn't exist")
 
-    @unittest.skip("FIXME")
+
     def test_evaluate_model(self):
         """
         Test boundaries of loss and accuracy
         """
-        texts, labels = preprocess_labels(data_dir_path="data/mock_aclImdb", dataset="test")
-        vectorized_texts, word_index = tokenize_data(texts)
-        mock_test_set = (vectorized_texts, labels)
+        _, (mock_X_test, mock_y_test) = datasets.imdb.load_data(num_words=2000)
+        mock_X_test = sequence.pad_sequences(mock_X_test, maxlen=500)
         mock_trained_model = load_model("models/", "mock_trained_model.h5")
 
-        loss, acc = evaluate_model(mock_trained_model, mock_test_set)
+        loss, acc = evaluate_model(mock_trained_model, (mock_X_test, mock_y_test))
 
         # Loss
         self.assertIsNotNone(loss, "loss not computed")
@@ -116,7 +112,7 @@ class ModelTests(unittest.TestCase):
         self.assertGreaterEqual(acc, 0., "accuracy is negativ")
         self.assertLessEqual(acc, 1., "accuracy is greater than 1")
 
-    @unittest.skip("FIXME")
+
     def test_plot_model(self):
         """
         Test if plotted model is saved to disk
@@ -126,6 +122,8 @@ class ModelTests(unittest.TestCase):
         files = os.listdir(self.test_plots_dir)
         if files:
             test_ext = os.path.splitext(files[0])[1]
+        else:
+            test_ext = None
 
         # Saves a models
         self.assertTrue(files, "no model plot saved")
